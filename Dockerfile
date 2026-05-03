@@ -14,7 +14,7 @@ COPY . .
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-ENV DJANGO_SETTINGS_MODULE=hng_task1.settings
+ENV DJANGO_SETTINGS_MODULE=insighta_backend.settings
 #ENV SECRET_KEY=dummy-secret-key-for-build
 
 ENTRYPOINT ["/entrypoint.sh"]
@@ -23,4 +23,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8000
 
-CMD ["gunicorn", "hng_task1.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "insighta_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
