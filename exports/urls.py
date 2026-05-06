@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import ExportCSVView
+from .views import ExportProfilesCSVView, ExportUsersCSVView
 
 urlpatterns = [
-    path('csv/', ExportCSVView.as_view(), name='export-csv'),
+    path('profiles/', ExportProfilesCSVView.as_view()),
+    path('users/', ExportUsersCSVView.as_view()),
 ]

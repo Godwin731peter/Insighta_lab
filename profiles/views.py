@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from accounts.authentication import CookieOrHeaderJWTAuthentication
+from core.permissions import IsAnalyst
 
 
 # Create your views here.
@@ -406,6 +408,8 @@ class HealthView(APIView):
 
 
 class ProfileListView(APIView):
+    authentication_classes = [CookieOrHeaderJWTAuthentication]
+    permission_classes = [IsAnalyst]
 
     def options(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_200_OK)
@@ -484,6 +488,8 @@ class ProfileListView(APIView):
 
 
 class ProfileSearchView(APIView):
+    authentication_classes = [CookieOrHeaderJWTAuthentication]
+    permission_classes = [IsAnalyst]
 
     def options(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_200_OK)
@@ -540,6 +546,8 @@ class ProfileSearchView(APIView):
 
 
 class ProfileDetailView(APIView):
+    authentication_classes = [CookieOrHeaderJWTAuthentication]
+    permission_classes = [IsAnalyst]
 
     def options(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_200_OK)

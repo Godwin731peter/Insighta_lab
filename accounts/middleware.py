@@ -1,7 +1,7 @@
 import logging
 import time
 
-logger = logging.getLogger('insighta.requests')
+logger = logging.getLogger("insighta.requests")
 
 
 class RequestLoggingMiddleware:
@@ -13,9 +13,9 @@ class RequestLoggingMiddleware:
         response = self.get_response(request)
         duration = (time.time() - start) * 1000
 
-        user = getattr(request, 'user', None)
+        user = getattr(request, "user", None)
         username = (
-            user.username if user and user.is_authenticated else 'anonymous'
+            user.username if user and user.is_authenticated else "anonymous"
         )
 
         logger.info(
