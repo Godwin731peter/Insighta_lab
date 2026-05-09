@@ -2,11 +2,14 @@ from django.shortcuts import render
 import re
 import requests
 from django.http import JsonResponse
+from django.core.cache import cache
+from .utils.query_normalizer import generate_cache_key
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from accounts.authentication import CookieOrHeaderJWTAuthentication
 from core.permissions import IsAnalyst
+from .tasks import process_csv
 
 
 # Create your views here.
@@ -544,6 +547,23 @@ class ProfileSearchView(APIView):
         }, status=status.HTTP_200_OK)
         return cors_headers(response)
 
+        filters = {
+            "gender": request.GET.get("gender"),
+            "country_id": request.GET.get("country_id"),
+            "age_min": request.GET.get("age_min"),
+            "age_max": request.GET.get("age_max"),
+        }
+
+        cache_key = generate_cache_key(filters)
+
+        cached_data = cache.get(cache_key)
+
+        cache.set(cache_key, data, timeout=300)
+
+
+        if cached_data:
+            return Response(cached_data)
+
 
 class ProfileDetailView(APIView):
     authentication_classes = [CookieOrHeaderJWTAuthentication]
@@ -581,3 +601,28 @@ class ProfileDetailView(APIView):
         profile.delete()
         response = Response(status=status.HTTP_204_NO_CONTENT)
         return cors_headers(response)
+
+class CSVUploadView(APIView):
+
+    def post(self, request):
+
+        file = request.FILES.get("file")
+
+        if not file:
+            return Response(
+                {"error": "No file uploaded"},
+                status=400
+            )
+
+        file_path = f"uploads/{file.name}"
+
+        with open(file_path, "wb+") as destination:
+
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        process_csv.delay(file_path)
+
+        return Response({
+            "status": "processing"
+        })

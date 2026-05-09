@@ -6,4 +6,5 @@ urlpatterns = [
     path('profiles/', views.ProfileListView.as_view(), name='profiles-list'),
     path('profiles/search/', views.ProfileSearchView.as_view(), name='profiles-search'),
     path('profiles/<uuid:profile_id>/', views.ProfileDetailView.as_view(), name='profile-detail'),
+    path('upload-csv/', views.CSVUploadView.as_view(), name='upload-csv'),
 ]
